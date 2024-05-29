@@ -1,0 +1,41 @@
+/* #customers é utilizado para personalizar a tabela */
+body{
+    background-color: #243b55;
+}
+.table-container {
+    overflow-x: auto;
+}
+
+#customers {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    overflow-x: auto;
+    /* Adiciona o overflow horizontal para tornar a tabela responsiva */
+}
+
+#customers td,
+#customers th {
+    border: 1px solid #00000048;
+    padding: 8px;
+    color: white;
+}
+
+#customers tr:nth-child(even) {
+    background-color: #5100ff19;
+}
+
+#customers tr:hover {
+    background-color: #ffffff39;
+}
+
+#customers th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: center;
+    background-color: #5900ff4f;
+    color: rgb(255, 255, 255);
+    border-radius: 2%;
+}
+
+/* final css da tabela */

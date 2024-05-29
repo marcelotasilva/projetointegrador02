@@ -1,0 +1,46 @@
+body{
+    background: linear-gradient(90deg, rgb(151, 159, 170) 1%, rgba(131,177,228,0.23853291316526615) 49%, rgb(151, 159, 170) 100%);
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 16px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    border-radius: 6px;
+  }
+  
+  .button {
+    background-color: black; 
+    color: white; 
+    border: 2px solid black;
+  }
+  
+  .button:hover {
+    background-color: white;
+    color:black;
+  }
+
+  header{
+    margin: 0 auto;
+    text-align: center;
+  }
+  label{
+    font-size: 30px;
+  }
+  button{
+    border-radius: 5px;
+    border: -25px;
+    font-size: 20px;
+  }
+  input{
+    font-size: 25px;
+  }

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleção de Barbeiro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-image: url('./img/barber.jpg');
+            background-size: cover;
+        }
+        
+        .container {
+            text-align: center;
+            color: white; /* Altera a cor do texto para branco */
+        }
+        
+        .barber-face {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background-color: #fff;
+            display: inline-block;
+            margin: 20px;
+            cursor: pointer;
+        }
+        
+        .barber-face img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .barber-face.selected {
+            border: 3px solid yellow; /* Estilo para destacar o selecionado */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Selecione seu barbeiro</h2>
+        <a href="inicio.html" class="barber-face" data-barber="barbeiro1">
+            <img src="" alt="Barbeiro 1">
+        </a>
+        <a href="inicio.html" class="barber-face" data-barber="barbeiro2">
+            <img src="" alt="Barbeiro 2">
+        </a>
+        <a href="inicio.html" class="barber-face" data-barber="barbeiro3">
+            <img src="" alt="Barbeiro 3">
+        </a>
+        
+    </div>
+
+    <script>
+        function selectBarber() {
+            const selectedBarber = document.querySelector('.barber-face.selected');
+            if (selectedBarber) {
+                const barberName = selectedBarber.getAttribute('data-barber');
+                alert(`Você selecionou o barbeiro ${barberName}`);
+                // Aqui você pode adicionar redirecionamento para a página específica do barbeiro ou fazer qualquer outra ação necessária
+            } else {
+                alert('Por favor, selecione um barbeiro antes de prosseguir.');
+            }
+        }
+
+        document.querySelectorAll('.barber-face').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.barber-face').forEach(item => {
+                    item.classList.remove('selected');
+                });
+                item.classList.add('selected');
+            });
+        });
+    </script>
+</body>
+</html>

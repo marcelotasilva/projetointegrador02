@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleção de Serviço</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-image: url('./img/barber.jpg'); /* Aqui está a imagem de fundo */
+            background-size: cover;
+        }
+        
+        .container {
+            text-align: center;
+            color: #fff; /* Altera a cor do texto para branco */
+        }
+        
+        .service-option {
+            border: 2px solid #333;
+            border-radius: 10px;
+            margin: 10px;
+            cursor: pointer;
+            width: 300px; /* Largura fixa para as opções */
+            height: 200px; /* Altura fixa para as opções */
+            position: relative; /* Para posicionar a imagem corretamente */
+            overflow: hidden; /* Para esconder partes da imagem que excedem os limites da div */
+            display: inline-block;
+        }
+
+        .service-option img {
+            width: auto; /* Largura automática para manter a proporção */
+            height: 100%; /* Para garantir que a imagem ocupe toda a altura da div */
+            position: absolute; /* Para posicionamento absoluto dentro da div */
+            top: 0; /* Para alinhar a imagem ao topo */
+            left: 50%; /* Para centralizar horizontalmente */
+            transform: translateX(-50%); /* Para ajustar a posição horizontal */
+            z-index: -1; /* Para garantir que a imagem fique atrás do texto */
+            border-radius: 50%; /* Para fazer a imagem ficar circular */
+        }
+        
+        /* Estilização do conteúdo dentro da service-option */
+        .service-option-text {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.7); /* Fundo transparente */
+            padding: 10px;
+        }
+
+        .service-option h3, .service-option p {
+            margin: 0; /* Remover margens padrão */
+            color: #fff; /* Alterar cor do texto para branco */
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .btn-agendar {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #total-price {
+            margin-bottom: 20px;
+            color: #fff;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Selecione o(s) serviço(s) desejado(s)</h2>
+        <form action="cabecalho_empresa.html" method="post" id="service-form">
+            <div class="service-option">
+                <input type="checkbox" id="corte" name="services[]" value="Corte de Cabelo" data-price="40">
+                <label for="corte">
+                    <img src="./img/corte1.jpg" alt="Corte de Cabelo">
+                    <div class="service-option-text">
+                        <h3>Corte de Cabelo</h3>
+                        <p>Preço: R$ 40,00</p>
+                    </div>
+                </label>
+            </div>
+            <div class="service-option">
+                <input type="checkbox" id="barba" name="services[]" value="Barba" data-price="30">
+                <label for="barba">
+                    <img src="./img/barba.jpg" alt="Barba">
+                    <div class="service-option-text">
+                        <h3>Barba</h3>
+                        <p>Preço: R$ 30,00</p>
+                    </div>
+                </label>
+            </div>
+            <div class="service-option">
+                <input type="checkbox" id="alisamento" name="services[]" value="Alisamento" data-price="80">
+                <label for="alisamento">
+                    <img src="./img/alisa.jpg" alt="Alisamento">
+                    <div class="service-option-text">
+                        <h3>Alisamento</h3>
+                        <p>Preço: R$ 80,00</p>
+                    </div>
+                </label>
+            </div>
+            <div class="service-option">
+                <input type="checkbox" id="corte_barba" name="services[]" value="Corte e Barba" data-price="70">
+                <label for="corte_barba">
+                    <img src="./img/barba00.jpg" alt="Corte e Barba">
+                    <div class="service-option-text">
+                        <h3>Corte e Barba</h3>
+                        <p>Preço: R$ 70,00</p>
+                    </div>
+                </label>
+            </div>
+            <div id="total-price" class="center">Total: R$ 0,00</div>
+            <div class="center">
+                <input type="submit" value="Agendar" class="btn-agendar" id="submit-btn">
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        const totalPriceDisplay = document.getElementById('total-price');
+        const submitBtn = document.getElementById('submit-btn');
+        let totalPrice = 0;
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                const price = parseInt(checkbox.getAttribute('data-price'));
+                if (checkbox.checked) {
+                    totalPrice += price;
+                } else {
+                    totalPrice -= price;
+                }
+                totalPriceDisplay.textContent = `Total: R$ ${totalPrice.toFixed(2)}`;
+            });
+        });
+
+        // Adicionar evento de validação antes de enviar o formulário
+        document.getElementById('service-form').addEventListener('submit', function(event) {
+            const selectedServices = document.querySelectorAll('input[name="services[]"]:checked');
+            if (selectedServices.length === 0) {
+                event.preventDefault(); // Impede o envio do formulário
+                alert('Por favor, selecione ao menos um serviço antes de agendar.');
+            }
+            // Outras validações ou ações podem ser adicionadas aqui, se necessário
+        });
+    </script>
+</body>
+</html>

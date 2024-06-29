@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agendamento de Serviço</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-image: url('./img/barber.jpg');
+      background-size: cover;
+    }
+
+    #container {
+      text-align: center;
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    #calendar {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .calendar-month-year {
+      font-size: 20px;
+    }
+
+    .calendar-selectors {
+      margin-bottom: 10px;
+    }
+
+    .calendar-day {
+      display: inline-block;
+      width: calc(100% / 7);
+      height: 50px;
+      text-align: center;
+      line-height: 50px;
+      border: 1px solid #ccc;
+    }
+
+    .calendar-day.active {
+      background-color: #007bff;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .calendar-day.disabled {
+      background-color: #eee;
+      color: #999;
+    }
+
+    /* Estilização da modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    #selected-info {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <h2>Agendamento de Serviço</h2>
+    <div id="calendar"></div>
+    <div id="selected-info"></div> <!-- Aqui serão exibidos os serviços selecionados -->
+  </div>
+
+  <!-- Modal de escolha de horário -->
+  <div id="myModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3>Escolha o horário</h3>
+      <select id="horario">
+        <option value="08:00">08:00</option>
+        <option value="09:00">09:00</option>
+        <option value="10:00">10:00</option>
+        <option value="11:00">11:00</option>
+        <option value="12:00">12:00</option>
+        <option value="13:00">13:00</option>
+        <option value="14:00">14:00</option>
+        <option value="15:00">15:00</option>
+        <option value="16:00">16:00</option>
+        <option value="17:00">17:00</option>
+        <option value="18:00">18:00</option>
+        <option value="19:00">19:00</option>
+        <option value="20:00">20:00</option>
+      </select>
+      <button id="confirmar">Confirmar</button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const calendar = document.getElementById("calendar");
+      const modal = document.getElementById("myModal");
+      const span = document.getElementsByClassName("close")[0];
+      const monthSelector = document.createElement("select");
+      const yearSelector = document.createElement("select");
+      const selectedInfo = document.getElementById("selected-info");
+
+      // Adiciona seletores de mês e ano
+      monthSelector.id = "month";
+      yearSelector.id = "year";
+
+      for (let i = 0; i < 12; i++) {
+        const option = document.createElement("option");
+        option.value = i;
+        option.textContent = new Date(0, i).toLocaleString('default', { month: 'long' });
+        monthSelector.appendChild(option);
+      }
+
+      const currentYear = new Date().getFullYear();
+      for (let i = currentYear; i <= currentYear + 5; i++) { // Alterado o intervalo dos anos
+        const option = document.createElement("option");
+        option.value = i;
+        option.textContent = i;
+        yearSelector.appendChild(option);
+      }
+
+      // Função para adicionar zeros à esquerda para números menores que 10
+      function addLeadingZero(number) {
+        return number < 10 ? "0" + number : number;
+      }
+
+      // Função para formatar a data no formato "YYYY-MM-DD"
+      function formatDate(date) {
+        const year = date.getFullYear();
+        const month = addLeadingZero(date.getMonth() + 1);
+        const day = addLeadingZero(date.getDate());
+        return `${day}/${month}/${year}`;
+      }
+
+      // Função para criar o calendário
+      function createCalendar(year, month) {
+        calendar.innerHTML = ""; // Limpar o conteúdo do calendário
+
+        const firstDayOfMonth = new Date(year, month, 1);
+        const lastDayOfMonth = new Date(year, month + 1, 0);
+        const startingDay = firstDayOfMonth.getDay();
+        const daysInMonth = lastDayOfMonth.getDate();
+
+        const calendarHeader = document.createElement("div");
+        calendarHeader.classList.add("calendar-header");
+
+        const monthYear = document.createElement("div");
+        monthYear.classList.add("calendar-month-year");
+        monthYear.textContent = `${firstDayOfMonth.toLocaleString('default', { month: 'long' })} ${year}`;
+        calendarHeader.appendChild(monthYear);
+
+        const selectors = document.createElement("div");
+        selectors.classList.add("calendar-selectors");
+
+        selectors.appendChild(monthSelector);
+        selectors.appendChild(yearSelector);
+        calendarHeader.appendChild(selectors);
+
+        calendar.appendChild(calendarHeader);
+
+        let day = 1;
+
+        // Adiciona os dias do mês
+        for (let i = 0; i < 6; i++) {
+          for (let j = 0; j < 7; j++) {
+            if ((i === 0 && j < startingDay) || day > daysInMonth) {
+              // Adiciona os dias em branco antes do primeiro dia do mês ou após o último dia do mês
+              const blankDay = document.createElement("div");
+              blankDay.classList.add("calendar-day");
+              blankDay.classList.add("disabled");
+              calendar.appendChild(blankDay);
+            } else {
+              const calendarDay = document.createElement("div");
+              calendarDay.classList.add("calendar-day");
+              calendarDay.textContent = day;
+
+              const currentDate = new Date(year, month, day);
+              const today = new Date();
+
+              if (currentDate <= today) {
+                calendarDay.classList.add("disabled");
+              } else {
+                calendarDay.classList.add("active");
+                calendarDay.addEventListener("click", function() {
+                  const selectedDate = formatDate(currentDate);
+                  modal.style.display = "block";
+                  document.getElementById('confirmar').setAttribute('data-selected-date', selectedDate);
+                });
+              }
+
+              calendar.appendChild(calendarDay);
+              day++;
+            }
+          }
+        }
+      }
+
+      // Chamada inicial para criar o calendário
+      const today = new Date();
+      createCalendar(today.getFullYear(), today.getMonth());
+
+      // Ao clicar no 'X' (fechar), fechar o modal
+      span.onclick = function() {
+        modal.style.display = "none";
+      }
+
+      // Ao clicar fora do modal, fechar o modal
+      window.onclick = function(event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      }
+
+      // Ao clicar no botão 'Confirmar', obter o horário selecionado
+      document.getElementById("confirmar").onclick = function() {
+        const selectedDate = this.getAttribute('data-selected-date');
+        const selectedTime = document.getElementById("horario").value;
+        const selectedMonth = monthSelector.options[monthSelector.selectedIndex].textContent;
+        const selectedYear = yearSelector.value;
+        const selectedServices = document.querySelectorAll('input[name="services[]"]:checked');
+        let servicesText = "Serviços: ";
+        selectedServices.forEach(function(service, index) {
+          servicesText += service.value;
+          if (index < selectedServices.length - 1) {
+            servicesText += ", ";
+          }
+        });
+        const message = `Você selecionou o dia ${selectedDate} de ${selectedMonth} de ${selectedYear} às ${selectedTime}. ${servicesText}`;
+        const phone = "seu_numero"; // Substitua pelo número de telefone do barbeiro
+        const encodedMessage = encodeURIComponent(message);
+        const whatsappLink = `https://wa.me/${phone}?text=${encodedMessage}`;
+        window.location.href = whatsappLink;
+        modal.style.display = "none";
+
+        // Atualiza o texto das informações selecionadas
+        selectedInfo.textContent = message;
+      };
+
+      // Atualiza o calendário quando o mês ou o ano forem alterados
+      monthSelector.addEventListener("change", function() {
+        createCalendar(yearSelector.value, monthSelector.value);
+      });
+
+      yearSelector.addEventListener("change", function() {
+        createCalendar(yearSelector.value, monthSelector.value);
+      });
+    });
+  </script>
+</body>
+</html>
